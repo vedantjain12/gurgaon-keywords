@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gurgaon Keyword Mapper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: one editable sentence as the hero, a green road-sign plate of searches beside plain text blocks. */
+:root{
+  --ground:#D9D7D1; --ink:#1B1D1B; --muted:#57594F; --rule:#B4B1A8;
+  --plate:#0E5A43; --plate-ink:#F6F5EF; --plate-soft:#B9D3C7;
+  --marker:#F4C20D; --marker-ink:#1B1D1B; --focus:#0E5A43;
+  --g-bg:#FFFFFF; --g-title:#1A4FA3; --g-url:#2B6A4F; --g-text:#3D4A45;
+  --ok:#1D6B3A; --warn:#9A4A00;
+  --sign:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --read:"Source Serif 4",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#161817; --ink:#E8E7E1; --muted:#A3A69B; --rule:#34372F;
+    --plate:#0F5C45; --plate-ink:#F1F0EA; --plate-soft:#A9C9BA;
+    --marker:#F4C20D; --marker-ink:#1B1D1B; --focus:#F4C20D;
+    --g-bg:#1F2320; --g-title:#8AB4F8; --g-url:#8FCBA6; --g-text:#B5B8AD;
+    --ok:#6FCF93; --warn:#E89A4D;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--read);font-size:17px;line-height:1.6;padding-inline:20px;padding-block:32px 56px}
+.page{max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;gap:40px}
+.brand{font-family:var(--sign);font-weight:600;font-size:19px;letter-spacing:.01em;margin:0}
+
+/* Hero sentence */
+.hero{display:flex;flex-direction:column;gap:14px}
+.sentence{font-family:var(--sign);font-weight:600;font-size:clamp(28px,5.2vw,52px);line-height:1.25;margin:0;text-wrap:balance}
+.sentence select,.sentence input{font:inherit;color:inherit;background:transparent;border:0;border-bottom:3px solid var(--ink);border-radius:0;padding:0 2px;margin:0;max-width:100%;min-width:3ch;field-sizing:content}
+.sentence select{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:.9em;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23888' stroke-width='2.5'/%3E%3C/svg%3E") no-repeat right .15em center/.45em}
+.sentence select option{font-family:var(--read);font-size:16px;color:#1B1D1B;background:#fff}
+.sentence input::placeholder{color:var(--muted);opacity:.7}
+.sentence :focus-visible{outline:3px solid var(--focus);outline-offset:4px;border-radius:2px}
+.lede{margin:0;max-width:56ch;color:var(--muted)}
+
+/* Results */
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:48px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:minmax(0,1fr);gap:40px}}
+h2{font-family:var(--sign);font-weight:700;font-size:24px;line-height:1.2;margin:0 0 14px;text-wrap:balance}
+
+.plate{background:var(--plate);color:var(--plate-ink);border-radius:14px;padding:30px 30px 26px;box-shadow:inset 0 0 0 10px var(--plate),inset 0 0 0 12px var(--plate-ink)}
+.plate h2{color:var(--plate-ink);margin-bottom:10px}
+.plate ul{list-style:none;margin:0;padding:0}
+.plate li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-block:10px;border-top:1px solid color-mix(in srgb,var(--plate-ink) 22%,transparent);min-width:0}
+.plate li:first-child{border-top:0}
+.plate .p{font-family:var(--sign);font-weight:600;font-size:22px;line-height:1.25;overflow-wrap:anywhere;min-width:0}
+.plate .t{font-size:14px;color:var(--plate-soft);white-space:nowrap;flex:none}
+@media (max-width:420px){.plate li{flex-direction:column;gap:0}.plate .t{white-space:normal}}
+.tab{display:inline-block;margin-top:14px;background:var(--marker);color:var(--marker-ink);font-family:var(--sign);font-weight:700;font-size:18px;padding:6px 14px;border-radius:4px}
+
+.side{display:flex;flex-direction:column;gap:32px;min-width:0}
+.side section{min-width:0}
+.side section+section{border-top:1px solid var(--rule);padding-top:28px}
+.serp{background:var(--g-bg);border-radius:8px;padding:16px 18px;font-family:Arial,Helvetica,sans-serif;display:flex;flex-direction:column;gap:3px}
+.serp .u{color:var(--g-url);font-size:13px;overflow-wrap:anywhere}
+.serp .ti{color:var(--g-title);font-size:19px;line-height:1.3;overflow-wrap:anywhere}
+.serp .de{color:var(--g-text);font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.count{font-size:14px;color:var(--muted);margin:10px 0 0}
+.count b{font-weight:600}
+.count .ok{color:var(--ok)} .count .warn{color:var(--warn)}
+.body-text{margin:0 0 12px;overflow-wrap:anywhere}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+button{font:inherit;font-family:var(--sign);font-weight:600;font-size:16px;color:var(--ink);background:transparent;border:2px solid var(--ink);border-radius:4px;padding:5px 14px;cursor:pointer}
+button:hover{background:var(--ink);color:var(--ground)}
+button:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+
+.offer{border-top:3px solid var(--ink);padding-top:26px;max-width:66ch;display:flex;flex-direction:column;gap:10px}
+.offer h2{font-size:30px;margin:0}
+.offer p{margin:0}
+.sample{margin:0;font-size:15px;color:var(--muted)}
+.fine{margin:0;font-size:14px;color:var(--muted);max-width:66ch}
+</style>
+</head>
+<body>
+<div class="page">
+  <p class="brand">Gurgaon Keyword Mapper</p>
+
+  <div class="hero">
+    <h1 class="sentence">
+      I run a <select id="btype" aria-label="Business type"></select> in <input id="area" aria-label="Area in Gurgaon" list="areas" value="Sector 56" placeholder="your area" autocomplete="off" spellcheck="false"> called <input id="bname" aria-label="Business name" value="Example Dental Clinic" placeholder="your business name" autocomplete="off" spellcheck="false">.
+    </h1>
+    <datalist id="areas"></datalist>
+    <p class="lede">Change the underlined words. The searches and the text below update as you type.</p>
+    <p class="sample" id="sample">This is a sample. Type your own details to replace it.</p>
+  </div>
+
+  <div class="grid" id="results" aria-live="polite"></div>
+  <div id="offer"></div>
+
+  <p class="fine">Search numbers are not shown because this page does not have them. The phrases are the ones that fit how people usually look for local services.</p>
+</div>
+
+<script>
+const TYPES = {
+  dentist:{label:'dental clinic',noun:'dental clinic',who:'patients',
+    intents:['dentist','dental clinic','dental implants','root canal treatment','teeth whitening','braces','kids dentist','emergency dentist'],
+    services:['dental implants','root canal treatment','teeth whitening','braces and aligners']},
+  physio:{label:'physiotherapy clinic',noun:'physiotherapy clinic',who:'patients',
+    intents:['physiotherapist','physiotherapy clinic','back pain treatment','knee pain physiotherapy','sports injury physio','neck pain treatment','home visit physiotherapy','post surgery rehab'],
+    services:['back pain treatment','knee pain physiotherapy','sports injury rehab','home visits']},
+  salon:{label:'salon',noun:'salon',who:'clients',
+    intents:['salon','unisex salon','hair salon','bridal makeup','haircut','hair colour','facial','beauty parlour'],
+    services:['haircuts','hair colour','facials','bridal makeup']},
+  gym:{label:'gym',noun:'gym',who:'members',
+    intents:['gym','fitness centre','personal trainer','weight loss gym','crossfit','yoga classes','zumba classes','gym with trainer'],
+    services:['personal training','weight training','yoga classes','group classes']},
+  workshop:{label:'car workshop',noun:'car workshop',who:'car owners',
+    intents:['car service','car workshop','multi brand car service','car AC repair','car denting painting','car detailing','car wash','car mechanic'],
+    services:['periodic car service','car AC repair','denting and painting','car detailing']},
+  cafe:{label:'cafe',noun:'cafe',who:'guests',
+    intents:['cafe','best cafe','coffee shop','brunch','birthday party venue','work friendly cafe','pet friendly cafe','dessert cafe'],
+    services:['coffee','brunch','desserts','birthday bookings']},
+  tutor:{label:'coaching centre',noun:'coaching centre',who:'students',
+    intents:['tuition classes','coaching centre','maths tuition','IB tutor','home tutor','IGCSE tuition','CBSE tuition','online tuition'],
+    services:['maths tuition','science tuition','IB and IGCSE support','exam preparation']}
+};
+const AREAS = ['DLF Phase 1','DLF Phase 2','DLF Phase 3','DLF Phase 4','DLF Phase 5','Sector 14','Sector 15','Sector 28','Sector 29','Sector 31','Sector 39','Sector 41','Sector 42','Sector 43','Sector 47','Sector 49','Sector 50','Sector 51','Sector 52','Sector 53','Sector 54','Sector 55','Sector 56','Sector 57','Sector 65','Sector 66','Sector 67','Sector 82','Sector 83','Sector 84','Sector 90','Golf Course Road','Golf Course Extension Road','Sohna Road','Sushant Lok 1','Sushant Lok 2','Palam Vihar','Udyog Vihar','MG Road','Cyber City','South City 1','Malibu Town','Nirvana Country'];
+
+const $ = id => document.getElementById(id);
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const join = a => a.length < 2 ? a.join('') : a.slice(0,-1).join(', ') + ' and ' + a[a.length-1];
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+for (const [k,v] of Object.entries(TYPES)) { const o = el('option', null, v.label); o.value = k; $('btype').appendChild(o); }
+for (const a of AREAS) { const o = document.createElement('option'); o.value = a; $('areas').appendChild(o); }
+
+function phrases(t, area){
+  const a = area.toLowerCase(), out = [], seen = new Set();
+  const add = (text, tag) => { if (!seen.has(text)) { seen.add(text); out.push({text, tag}); } };
+  t.intents.slice(0,3).forEach(i => {
+    add(`${i} in ${a}`, 'wants one nearby');
+    add(`${i} near ${a}`, 'wants one nearby');
+    add(`best ${i} in ${a}`, 'comparing');
+    add(`${i} ${a} gurgaon`, 'wants one nearby');
+  });
+  t.intents.slice(3).forEach(i => {
+    add(`${i} in ${a}`, 'specific need');
+    add(`best ${i} in ${a}`, 'comparing');
+  });
+  return out;
+}
+function makeTitle(t, area, name){
+  const p = cap(t.intents[0]);
+  const c = [`${p} in ${area}, Gurgaon | ${name}`, `${p} in ${area} | ${name}`, `${p} in ${area}, Gurgaon`];
+  return c.find(x => x.length <= 60) || c[2];
+}
+function makeMeta(t, area, name){
+  for (let n = 3; n >= 1; n--) {
+    const s = `${name} is a ${t.noun} in ${area}, Gurgaon offering ${join(t.services.slice(0,n))}. Call or book online today.`;
+    if (s.length <= 155) return s;
+  }
+  return `${name} is a ${t.noun} in ${area}, Gurgaon. Call or book online today.`;
+}
+function makeGbp(t, area, name){
+  return `${name} is a ${t.noun} in ${area}, Gurgaon. We help ${t.who} across ${area} and nearby areas with ${join(t.services)}. We explain every option in plain language and give a clear price before any work begins. Call or message us to book a time that suits you.`.slice(0,750);
+}
+async function copyText(text, btn){
+  const old = btn.textContent;
+  try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied'; }
+  catch (e) { btn.textContent = 'Select the text and copy'; }
+  setTimeout(() => btn.textContent = old, 1600);
+}
+function counter(label, len, max){
+  const p = el('p','count');
+  p.append(document.createTextNode(label + ': '));
+  const b = el('b', len <= max ? 'ok' : 'warn', `${len} of ${max} characters`);
+  p.appendChild(b); return p;
+}
+function copyBtn(label, text){
+  const b = el('button', null, label); b.type = 'button';
+  b.addEventListener('click', () => copyText(text, b)); return b;
+}
+
+function render(){
+  const t = TYPES[$('btype').value];
+  const area = $('area').value.trim() || 'Gurgaon';
+  const name = $('bname').value.trim() || 'Your business';
+  const list = phrases(t, area);
+  const title = makeTitle(t, area, name), meta = makeMeta(t, area, name), gbp = makeGbp(t, area, name);
+
+  // Plate
+  const plate = el('section','plate');
+  plate.appendChild(el('h2', null, `Searches worth going after in ${area}`));
+  const ul = el('ul');
+  list.slice(0,6).forEach(p => { const li = el('li'); li.append(el('span','p',p.text), el('span','t',p.tag)); ul.appendChild(li); });
+  plate.appendChild(ul);
+  plate.appendChild(el('span','tab',`${list.length - 6} more in the full pack`));
+
+  // Side column
+  const side = el('div','side');
+  const s1 = el('section');
+  s1.appendChild(el('h2', null, 'How your listing could read on Google'));
+  const serp = el('div','serp');
+  serp.append(el('div','u',`www.yourwebsite.com › ${area.toLowerCase().replace(/\s+/g,'-')}`), el('div','ti',title), el('div','de',meta));
+  s1.appendChild(serp);
+  s1.appendChild(counter('Title', title.length, 60));
+  s1.appendChild(counter('Description', meta.length, 155));
+  const b1 = el('div','btns'); b1.append(copyBtn('Copy title', title), copyBtn('Copy description', meta)); s1.appendChild(b1);
+
+  const s2 = el('section');
+  s2.appendChild(el('h2', null, 'Text for your Google Business profile'));
+  s2.appendChild(el('p','body-text',gbp));
+  s2.appendChild(counter('Length', gbp.length, 750));
+  const b2 = el('div','btns'); b2.appendChild(copyBtn('Copy text', gbp)); s2.appendChild(b2);
+  side.append(s1, s2);
+
+  $('results').replaceChildren(plate, side);
+
+  const offer = el('section','offer');
+  offer.appendChild(el('h2', null, `Want all of this finished for ${name}?`));
+  offer.appendChild(el('p', null, `The full pack has all ${list.length} searches sorted by what the person wants, text for your five main services, and your Google Business text completed. It costs ₹2,500 and arrives in 3 days. Reply to the email that brought you here.`));
+  $('offer').replaceChildren(offer);
+}
+
+function fit(e){ e.style.width = Math.max(5, e.value.length + 1) + 'ch'; }
+['area','bname'].forEach(id => { fit($(id)); $(id).addEventListener('input', e => { fit(e.target); touched(); render(); }); });
+$('btype').addEventListener('change', () => { touched(); render(); });
+function touched(){ $('sample').hidden = true; }
+render();
+</script>
+</body>
+</html>
